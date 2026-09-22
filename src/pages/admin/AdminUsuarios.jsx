@@ -220,9 +220,12 @@ export default function AdminUsuarios() {
         </h3>
         <div className="grid gap-4 sm:grid-cols-3">
           <label className="block">
-            <span className="mb-1 block text-xs font-semibold uppercase tracking-wide text-slate-500">Usuario</span>
+            <span className="mb-1 block text-xs font-semibold uppercase tracking-wide text-slate-500">
+              Usuario <span className="text-red-600">*</span>
+            </span>
             <input
               type="text"
+              required
               value={nuevoUsuario}
               onChange={(e) => setNuevoUsuario(e.target.value)}
               placeholder="Mínimo 3 caracteres"
@@ -230,9 +233,12 @@ export default function AdminUsuarios() {
             />
           </label>
           <label className="block">
-            <span className="mb-1 block text-xs font-semibold uppercase tracking-wide text-slate-500">Correo</span>
+            <span className="mb-1 block text-xs font-semibold uppercase tracking-wide text-slate-500">
+              Correo <span className="text-red-600">*</span>
+            </span>
             <input
               type="email"
+              required
               value={nuevoEmail}
               onChange={(e) => setNuevoEmail(e.target.value)}
               placeholder="correo@ejemplo.com"
@@ -240,9 +246,12 @@ export default function AdminUsuarios() {
             />
           </label>
           <label className="block">
-            <span className="mb-1 block text-xs font-semibold uppercase tracking-wide text-slate-500">Contraseña</span>
+            <span className="mb-1 block text-xs font-semibold uppercase tracking-wide text-slate-500">
+              Contraseña <span className="text-red-600">*</span>
+            </span>
             <input
               type="password"
+              required
               autoComplete="new-password"
               value={nuevoPass}
               onChange={(e) => setNuevoPass(e.target.value)}

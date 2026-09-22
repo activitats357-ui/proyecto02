@@ -131,15 +131,21 @@ export function obtenerUsuarioActual() {
   return { id: usuario.id, usuario: usuario.usuario, email: usuario.email || '' }
 }
 
+// Validación básica de correo electrónico.
+const REGEX_EMAIL = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
+
 export function crearUsuario({ usuario, password, email }) {
   const usuarios = asegurarUsuarios()
   const nombre = (usuario || '').trim()
+  const correo = (email || '').trim()
   if (nombre.length < 3) return { ok: false, error: 'El usuario debe tener al menos 3 caracteres.' }
+  if (!correo) return { ok: false, error: 'El correo es obligatorio.' }
+  if (!REGEX_EMAIL.test(correo)) return { ok: false, error: 'Introduce un correo electrónico válido.' }
   if ((password || '').length < 8) return { ok: false, error: 'La contraseña debe tener al menos 8 caracteres.' }
   if (usuarios.some((u) => normalizar(u.usuario) === normalizar(nombre))) {
     return { ok: false, error: 'Ya existe una cuenta con ese usuario.' }
   }
-  const nuevo = { id: nuevoId(), usuario: nombre, hash: hashSimple(password), email: (email || '').trim(), creadoEn: new Date().toISOString() }
+  const nuevo = { id: nuevoId(), usuario: nombre, hash: hashSimple(password), email: correo, creadoEn: new Date().toISOString() }
   persistir([...usuarios, nuevo])
   return { ok: true }
 }
