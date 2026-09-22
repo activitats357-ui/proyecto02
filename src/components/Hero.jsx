@@ -1,8 +1,12 @@
 import { ArrowRight, Activity } from 'lucide-react'
 import Button from './Button'
 import { centro } from '../data'
+import { useContent } from '../hooks/useContent'
+import { IMAGEN_PORTADA_POR_DEFECTO } from '../utils/contentStore'
 
 export default function Hero() {
+  const { ajustes } = useContent()
+  const imagenPortada = ajustes?.imagenPortada || IMAGEN_PORTADA_POR_DEFECTO
   return (
     <section className="relative overflow-hidden bg-primary-950">
       <div
@@ -41,7 +45,7 @@ export default function Hero() {
         <div className="relative animate-fade-in">
           <div className="aspect-[4/3] w-full overflow-hidden rounded-3xl shadow-2xl ring-1 ring-white/10">
             <img
-              src="https://images.unsplash.com/photo-1540205895360-4ad4cffb3aa8?fm=jpg&q=80&w=1200&auto=format&fit=crop"
+              src={imagenPortada}
               alt="Sesión de fisioterapia deportiva: profesional aplicando terapia manual a un paciente"
               className="h-full w-full object-cover"
               loading="eager"

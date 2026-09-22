@@ -13,6 +13,14 @@ import { horarios as horariosDefault } from '../data/centro'
 export const CONTENIDO_KEY = 'fisioterapia_contenido'
 export const EVENTO_CONTENIDO = 'contenido-actualizado'
 
+// Imagen de portada por defecto (foto principal del Hero de la página de inicio).
+export const IMAGEN_PORTADA_POR_DEFECTO =
+  'https://images.unsplash.com/photo-1540205895360-4ad4cffb3aa8?fm=jpg&q=80&w=1200&auto=format&fit=crop'
+
+function ajustesPorDefecto() {
+  return { imagenPortada: IMAGEN_PORTADA_POR_DEFECTO }
+}
+
 function clonar(valor) {
   return JSON.parse(JSON.stringify(valor))
 }
@@ -22,6 +30,7 @@ function contenidoPorDefecto() {
     servicios: clonar(serviciosDefault),
     profesionales: clonar(profesionalesDefault),
     horarios: clonar(horariosDefault),
+    ajustes: ajustesPorDefecto(),
   }
 }
 
@@ -38,6 +47,7 @@ function leerContenido() {
       servicios: Array.isArray(guardado.servicios) ? guardado.servicios : base.servicios,
       profesionales: Array.isArray(guardado.profesionales) ? guardado.profesionales : base.profesionales,
       horarios: Array.isArray(guardado.horarios) ? guardado.horarios : base.horarios,
+      ajustes: { ...base.ajustes, ...(guardado.ajustes || {}) },
     }
   } catch (error) {
     console.warn('No se pudo leer el contenido guardado; se usan los valores por defecto.', error)
@@ -90,6 +100,17 @@ export function guardarHorarios(horarios) {
   contenido.horarios = horarios
   guardarContenido(contenido)
   return horarios
+}
+
+export function obtenerAjustes() {
+  return leerContenido().ajustes
+}
+
+export function guardarAjustes(ajustes) {
+  const contenido = leerContenido()
+  contenido.ajustes = { ...contenido.ajustes, ...ajustes }
+  guardarContenido(contenido)
+  return contenido.ajustes
 }
 
 // Restablece TODO el contenido a los valores por defecto del código.

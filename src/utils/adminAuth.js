@@ -1,17 +1,18 @@
-// Autenticación PROVISIONAL del panel de administración basada en localStorage.
+// Autenticación PROVISIONAL del panel de administración basada en localStorage,
+// con soporte para MÚLTIPLES cuentas de usuario.
 //
 // ⚠️ IMPORTANTE: esto NO es seguridad real. Al ser una aplicación estática sin
 // backend, cualquier persona con conocimientos técnicos puede saltarse este
-// control. Sirve únicamente para evitar el acceso casual mientras no se conecta
-// un backend real (Supabase), que gestionará la autenticación de forma segura y
-// la recuperación de contraseña por correo. La contraseña se guarda "hasheada"
-// con una función simple, no criptográficamente segura.
+// control y leer los datos. Sirve para evitar el acceso casual mientras no se
+// conecta un backend real (Supabase), que gestionará la autenticación de forma
+// segura y la recuperación de contraseña por correo. Las contraseñas se guardan
+// "hasheadas" con una función simple, no criptográficamente segura.
 
-export const CRED_KEY = 'fisioterapia_admin_cred'
+export const USUARIOS_KEY = 'fisioterapia_admin_usuarios'
 export const SESION_KEY = 'fisioterapia_admin_sesion'
+const LEGACY_CRED_KEY = 'fisioterapia_admin_cred'
 
-// Credenciales por defecto en la primera ejecución. Deben cambiarse desde el
-// panel (sección "Cuenta") tras el primer acceso.
+// Cuenta inicial en la primera ejecución. Debe cambiarse tras el primer acceso.
 export const USUARIO_POR_DEFECTO = 'admin'
 export const PASSWORD_POR_DEFECTO = 'admin1234'
 
@@ -21,61 +22,83 @@ function hashSimple(texto) {
   for (let i = 0; i < texto.length; i += 1) {
     hash = (hash * 33) ^ texto.charCodeAt(i)
   }
-  // Se convierte a hexadecimal sin signo.
   return (hash >>> 0).toString(16)
 }
 
-function leerCredencial() {
+function nuevoId() {
+  if (typeof crypto !== 'undefined' && crypto.randomUUID) return `user-${crypto.randomUUID()}`
+  return `user-${Date.now()}-${Math.random().toString(36).slice(2, 8)}`
+}
+
+function leerCrudo() {
   if (typeof window === 'undefined') return null
   try {
-    const item = window.localStorage.getItem(CRED_KEY)
+    const item = window.localStorage.getItem(USUARIOS_KEY)
     if (!item) return null
-    return JSON.parse(item)
+    const datos = JSON.parse(item)
+    return Array.isArray(datos) ? datos : null
   } catch {
     return null
   }
 }
 
-function escribirCredencial(cred) {
+function persistir(usuarios) {
   if (typeof window === 'undefined') return
-  window.localStorage.setItem(CRED_KEY, JSON.stringify(cred))
+  window.localStorage.setItem(USUARIOS_KEY, JSON.stringify(usuarios))
 }
 
-// Devuelve la credencial vigente (la guardada o la de por defecto).
-function credencialVigente() {
-  const guardada = leerCredencial()
-  if (guardada && guardada.usuario && guardada.hash) return guardada
-  return {
-    usuario: USUARIO_POR_DEFECTO,
-    hash: hashSimple(PASSWORD_POR_DEFECTO),
-    email: '',
-    porDefecto: true,
+// Garantiza que exista al menos una cuenta: migra la credencial antigua de un
+// solo usuario si la hubiera, o crea la cuenta por defecto.
+function asegurarUsuarios() {
+  const existentes = leerCrudo()
+  if (existentes && existentes.length) return existentes
+
+  let usuarios
+  let legacy = null
+  if (typeof window !== 'undefined') {
+    try {
+      const item = window.localStorage.getItem(LEGACY_CRED_KEY)
+      if (item) legacy = JSON.parse(item)
+    } catch {
+      legacy = null
+    }
   }
+
+  if (legacy && legacy.usuario && legacy.hash) {
+    usuarios = [
+      { id: nuevoId(), usuario: legacy.usuario, hash: legacy.hash, email: legacy.email || '', creadoEn: new Date().toISOString() },
+    ]
+  } else {
+    usuarios = [
+      { id: nuevoId(), usuario: USUARIO_POR_DEFECTO, hash: hashSimple(PASSWORD_POR_DEFECTO), email: '', creadoEn: new Date().toISOString() },
+    ]
+  }
+  persistir(usuarios)
+  return usuarios
 }
 
-export function estaUsandoCredencialPorDefecto() {
-  const guardada = leerCredencial()
-  return !(guardada && guardada.usuario && guardada.hash)
+function normalizar(nombre) {
+  return (nombre || '').trim().toLowerCase()
 }
 
-export function obtenerDatosCuenta() {
-  const cred = credencialVigente()
-  return { usuario: cred.usuario, email: cred.email || '', porDefecto: Boolean(cred.porDefecto) }
+// --- API pública ---
+
+export function listarUsuarios() {
+  return asegurarUsuarios().map(({ id, usuario, email, creadoEn }) => ({ id, usuario, email: email || '', creadoEn }))
 }
 
 export function iniciarSesion(usuario, password) {
-  const cred = credencialVigente()
-  const usuarioOk = (usuario || '').trim().toLowerCase() === cred.usuario.toLowerCase()
-  const passwordOk = hashSimple(password || '') === cred.hash
-  if (usuarioOk && passwordOk) {
-    try {
-      window.sessionStorage.setItem(SESION_KEY, String(Date.now()))
-    } catch {
-      /* sessionStorage puede fallar en modo privado; la sesión será efímera */
-    }
-    return { ok: true }
+  const usuarios = asegurarUsuarios()
+  const encontrado = usuarios.find((u) => normalizar(u.usuario) === normalizar(usuario))
+  if (!encontrado || encontrado.hash !== hashSimple(password || '')) {
+    return { ok: false, error: 'Usuario o contraseña incorrectos.' }
   }
-  return { ok: false, error: 'Usuario o contraseña incorrectos.' }
+  try {
+    window.sessionStorage.setItem(SESION_KEY, JSON.stringify({ id: encontrado.id, usuario: encontrado.usuario }))
+  } catch {
+    /* sessionStorage puede fallar en modo privado; la sesión será efímera */
+  }
+  return { ok: true }
 }
 
 export function cerrarSesion() {
@@ -86,34 +109,90 @@ export function cerrarSesion() {
   }
 }
 
-export function haySesion() {
-  if (typeof window === 'undefined') return false
+export function obtenerSesion() {
+  if (typeof window === 'undefined') return null
   try {
-    return Boolean(window.sessionStorage.getItem(SESION_KEY))
+    const item = window.sessionStorage.getItem(SESION_KEY)
+    return item ? JSON.parse(item) : null
   } catch {
-    return false
+    return null
   }
 }
 
-// Cambia usuario, contraseña y/o correo de recuperación. Requiere la contraseña
-// actual como comprobación mínima.
-export function cambiarCredencial({ passwordActual, nuevoUsuario, nuevoPassword, email }) {
-  const cred = credencialVigente()
-  if (hashSimple(passwordActual || '') !== cred.hash) {
-    return { ok: false, error: 'La contraseña actual no es correcta.' }
+export function haySesion() {
+  return Boolean(obtenerSesion())
+}
+
+export function obtenerUsuarioActual() {
+  const sesion = obtenerSesion()
+  if (!sesion) return null
+  const usuario = asegurarUsuarios().find((u) => u.id === sesion.id)
+  if (!usuario) return { id: sesion.id, usuario: sesion.usuario, email: '' }
+  return { id: usuario.id, usuario: usuario.usuario, email: usuario.email || '' }
+}
+
+export function crearUsuario({ usuario, password, email }) {
+  const usuarios = asegurarUsuarios()
+  const nombre = (usuario || '').trim()
+  if (nombre.length < 3) return { ok: false, error: 'El usuario debe tener al menos 3 caracteres.' }
+  if ((password || '').length < 8) return { ok: false, error: 'La contraseña debe tener al menos 8 caracteres.' }
+  if (usuarios.some((u) => normalizar(u.usuario) === normalizar(nombre))) {
+    return { ok: false, error: 'Ya existe una cuenta con ese usuario.' }
   }
-  const usuarioFinal = (nuevoUsuario || cred.usuario).trim()
-  if (usuarioFinal.length < 3) {
-    return { ok: false, error: 'El usuario debe tener al menos 3 caracteres.' }
-  }
-  if (nuevoPassword && nuevoPassword.length < 8) {
-    return { ok: false, error: 'La nueva contraseña debe tener al menos 8 caracteres.' }
-  }
-  const nuevaCred = {
-    usuario: usuarioFinal,
-    hash: nuevoPassword ? hashSimple(nuevoPassword) : cred.hash,
-    email: email !== undefined ? email.trim() : cred.email || '',
-  }
-  escribirCredencial(nuevaCred)
+  const nuevo = { id: nuevoId(), usuario: nombre, hash: hashSimple(password), email: (email || '').trim(), creadoEn: new Date().toISOString() }
+  persistir([...usuarios, nuevo])
   return { ok: true }
+}
+
+export function eliminarUsuario(id) {
+  const usuarios = asegurarUsuarios()
+  if (usuarios.length <= 1) return { ok: false, error: 'No se puede eliminar la única cuenta existente.' }
+  const sesion = obtenerSesion()
+  if (sesion && sesion.id === id) {
+    return { ok: false, error: 'No puedes eliminar la cuenta con la que has iniciado sesión.' }
+  }
+  persistir(usuarios.filter((u) => u.id !== id))
+  return { ok: true }
+}
+
+export function cambiarPassword(id, nuevoPassword) {
+  if ((nuevoPassword || '').length < 8) return { ok: false, error: 'La contraseña debe tener al menos 8 caracteres.' }
+  const usuarios = asegurarUsuarios()
+  if (!usuarios.some((u) => u.id === id)) return { ok: false, error: 'La cuenta no existe.' }
+  persistir(usuarios.map((u) => (u.id === id ? { ...u, hash: hashSimple(nuevoPassword) } : u)))
+  return { ok: true }
+}
+
+export function actualizarUsuario(id, { usuario, email }) {
+  const usuarios = asegurarUsuarios()
+  const objetivo = usuarios.find((u) => u.id === id)
+  if (!objetivo) return { ok: false, error: 'La cuenta no existe.' }
+  const nombre = usuario !== undefined ? usuario.trim() : objetivo.usuario
+  if (nombre.length < 3) return { ok: false, error: 'El usuario debe tener al menos 3 caracteres.' }
+  if (usuarios.some((u) => u.id !== id && normalizar(u.usuario) === normalizar(nombre))) {
+    return { ok: false, error: 'Ya existe otra cuenta con ese usuario.' }
+  }
+  persistir(
+    usuarios.map((u) =>
+      u.id === id ? { ...u, usuario: nombre, email: email !== undefined ? email.trim() : u.email } : u,
+    ),
+  )
+  // Si se renombró la cuenta activa, refleja el cambio en la sesión.
+  const sesion = obtenerSesion()
+  if (sesion && sesion.id === id && sesion.usuario !== nombre) {
+    try {
+      window.sessionStorage.setItem(SESION_KEY, JSON.stringify({ id, usuario: nombre }))
+    } catch {
+      /* ignore */
+    }
+  }
+  return { ok: true }
+}
+
+// Para el aviso de la pantalla de login: ¿sigue existiendo la cuenta "admin"
+// con la contraseña por defecto?
+export function estaUsandoCredencialPorDefecto() {
+  return asegurarUsuarios().some(
+    (u) => normalizar(u.usuario) === USUARIO_POR_DEFECTO && u.hash === hashSimple(PASSWORD_POR_DEFECTO),
+  )
 }

@@ -5,22 +5,25 @@ import {
   Stethoscope,
   Users,
   UserCog,
+  Image,
   LogOut,
   ExternalLink,
 } from 'lucide-react'
-import { cerrarSesion, obtenerDatosCuenta } from '../../utils/adminAuth'
+import { cerrarSesion, obtenerUsuarioActual } from '../../utils/adminAuth'
 
 const enlaces = [
   { to: '/admin', fin: true, etiqueta: 'Citas', icono: CalendarClock },
   { to: '/admin/horarios', etiqueta: 'Horarios', icono: Clock },
   { to: '/admin/servicios', etiqueta: 'Especialidades', icono: Stethoscope },
   { to: '/admin/profesionales', etiqueta: 'Profesionales', icono: Users },
-  { to: '/admin/cuenta', etiqueta: 'Cuenta', icono: UserCog },
+  { to: '/admin/portada', etiqueta: 'Portada', icono: Image },
+  { to: '/admin/cuentas', etiqueta: 'Cuentas', icono: UserCog },
 ]
 
 export default function AdminLayout() {
   const navigate = useNavigate()
-  const { usuario } = obtenerDatosCuenta()
+  const usuarioActual = obtenerUsuarioActual()
+  const usuario = usuarioActual ? usuarioActual.usuario : ''
 
   const salir = () => {
     cerrarSesion()

@@ -15,7 +15,8 @@ import AdminCitas from './pages/admin/AdminCitas'
 import AdminHorarios from './pages/admin/AdminHorarios'
 import AdminServicios from './pages/admin/AdminServicios'
 import AdminProfesionales from './pages/admin/AdminProfesionales'
-import AdminCuenta from './pages/admin/AdminCuenta'
+import AdminPortada from './pages/admin/AdminPortada'
+import AdminUsuarios from './pages/admin/AdminUsuarios'
 
 export default function App() {
   return (
@@ -46,7 +47,8 @@ export default function App() {
         <Route path="horarios" element={<AdminHorarios />} />
         <Route path="servicios" element={<AdminServicios />} />
         <Route path="profesionales" element={<AdminProfesionales />} />
-        <Route path="cuenta" element={<AdminCuenta />} />
+        <Route path="portada" element={<AdminPortada />} />
+        <Route path="cuentas" element={<AdminUsuarios />} />
       </Route>
     </Routes>
   )

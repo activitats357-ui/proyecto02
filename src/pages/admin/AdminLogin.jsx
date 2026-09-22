@@ -109,7 +109,7 @@ export default function AdminLogin() {
             <ShieldAlert className="mt-0.5 h-4 w-4 flex-shrink-0" aria-hidden="true" />
             <p>
               Acceso inicial — usuario <strong>{USUARIO_POR_DEFECTO}</strong> y contraseña{' '}
-              <strong>{PASSWORD_POR_DEFECTO}</strong>. Cámbialos desde «Cuenta» tras entrar.
+              <strong>{PASSWORD_POR_DEFECTO}</strong>. Cámbialos desde «Cuentas» tras entrar.
             </p>
           </div>
         )}
