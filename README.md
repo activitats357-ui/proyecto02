@@ -96,3 +96,5 @@ Paleta centralizada en `tailwind.config.js`:
 Tipografía: **Plus Jakarta Sans** (Google Fonts), importada en `src/index.css`.
 
 Se verificaron manualmente los contrastes de color clave (texto sobre fondo, botones, estados de foco) para cumplir con un nivel básico de accesibilidad AA: los textos en verde turquesa usan el tono `700` (no el `600`) para garantizar ≥ 4.5:1, y el foco de teclado usa un contorno visible en azul petróleo (`primary-600`) en todos los elementos interactivos.
+
+<!-- Desplegament continu via Vercel + GitHub actiu -->
