@@ -16,6 +16,7 @@ import AdminHorarios from './pages/admin/AdminHorarios'
 import AdminServicios from './pages/admin/AdminServicios'
 import AdminProfesionales from './pages/admin/AdminProfesionales'
 import AdminPortada from './pages/admin/AdminPortada'
+import AdminPrivacidad from './pages/admin/AdminPrivacidad'
 import AdminUsuarios from './pages/admin/AdminUsuarios'
 
 export default function App() {
@@ -48,6 +49,7 @@ export default function App() {
         <Route path="servicios" element={<AdminServicios />} />
         <Route path="profesionales" element={<AdminProfesionales />} />
         <Route path="portada" element={<AdminPortada />} />
+        <Route path="privacidad" element={<AdminPrivacidad />} />
         <Route path="cuentas" element={<AdminUsuarios />} />
       </Route>
     </Routes>

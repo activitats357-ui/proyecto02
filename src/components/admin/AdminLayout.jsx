@@ -6,6 +6,7 @@ import {
   Users,
   UserCog,
   Image,
+  ShieldCheck,
   LogOut,
   ExternalLink,
 } from 'lucide-react'
@@ -17,6 +18,7 @@ const enlaces = [
   { to: '/admin/servicios', etiqueta: 'Especialidades', icono: Stethoscope },
   { to: '/admin/profesionales', etiqueta: 'Profesionales', icono: Users },
   { to: '/admin/portada', etiqueta: 'Portada', icono: Image },
+  { to: '/admin/privacidad', etiqueta: 'Privacidad', icono: ShieldCheck },
   { to: '/admin/cuentas', etiqueta: 'Cuentas', icono: UserCog },
 ]
 
