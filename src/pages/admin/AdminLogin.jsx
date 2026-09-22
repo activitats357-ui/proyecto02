@@ -1,14 +1,8 @@
 import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { LogIn, ShieldAlert } from 'lucide-react'
+import { LogIn } from 'lucide-react'
 import Seo from '../../components/Seo'
-import {
-  iniciarSesion,
-  haySesion,
-  estaUsandoCredencialPorDefecto,
-  USUARIO_POR_DEFECTO,
-  PASSWORD_POR_DEFECTO,
-} from '../../utils/adminAuth'
+import { iniciarSesion, haySesion } from '../../utils/adminAuth'
 
 export default function AdminLogin() {
   const navigate = useNavigate()
@@ -16,7 +10,6 @@ export default function AdminLogin() {
   const [password, setPassword] = useState('')
   const [error, setError] = useState('')
   const [mostrarAyuda, setMostrarAyuda] = useState(false)
-  const usaPorDefecto = estaUsandoCredencialPorDefecto()
 
   // Si ya hay sesión, entra directamente al panel.
   if (haySesion()) {
@@ -103,16 +96,6 @@ export default function AdminLogin() {
             </div>
           )}
         </div>
-
-        {usaPorDefecto && (
-          <div className="mt-4 flex items-start gap-2 rounded-xl border border-amber-200 bg-amber-50 p-3 text-xs text-amber-800">
-            <ShieldAlert className="mt-0.5 h-4 w-4 flex-shrink-0" aria-hidden="true" />
-            <p>
-              Acceso inicial — usuario <strong>{USUARIO_POR_DEFECTO}</strong> y contraseña{' '}
-              <strong>{PASSWORD_POR_DEFECTO}</strong>. Cámbialos desde «Cuentas» tras entrar.
-            </p>
-          </div>
-        )}
       </div>
     </div>
   )
