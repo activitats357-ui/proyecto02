@@ -6,7 +6,7 @@ export default function TeamCard({ profesional }) {
       <div className="aspect-[4/5] w-full overflow-hidden bg-slate-100">
         <img
           src={profesional.foto}
-          alt={`Retrato de ${profesional.nombre}, ${profesional.especialidad.toLowerCase()}`}
+          alt={`Retrato de ${profesional.nombre || 'profesional'}${profesional.especialidad ? `, ${profesional.especialidad.toLowerCase()}` : ''}`}
           className="h-full w-full object-cover"
           loading="lazy"
           width={480}
@@ -28,7 +28,7 @@ export default function TeamCard({ profesional }) {
         <p className="text-sm leading-relaxed text-slate-600">{profesional.trayectoria}</p>
 
         <div className="mt-auto flex flex-wrap gap-2 pt-2">
-          {profesional.areas.map((area) => (
+          {(profesional.areas || []).map((area) => (
             <span
               key={area}
               className="rounded-full bg-slate-100 px-3 py-1 text-xs font-medium text-slate-700"

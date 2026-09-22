@@ -1,8 +1,9 @@
 import { useState } from 'react'
 import { CheckCircle2, Send } from 'lucide-react'
-import { tiposSolicitud, tratamientosFormulario, horariosPreferidos } from '../data'
+import { tiposSolicitud, horariosPreferidos } from '../data'
 import { crearConsulta } from '../utils/consultasStorage'
 import { validarFormularioContacto, formularioValoresIniciales } from '../utils/validation'
+import { useContent } from '../hooks/useContent'
 
 function CampoTexto({ etiqueta, name, tipo = 'text', valor, onChange, error, obligatorio, placeholder }) {
   const idCampo = `campo-${name}`
@@ -76,6 +77,8 @@ function CampoSelect({ etiqueta, name, valor, onChange, error, obligatorio, opci
 }
 
 export default function ContactForm() {
+  const { servicios } = useContent()
+  const tratamientosFormulario = [...servicios.map((s) => s.nombre), 'No estoy seguro/a']
   const [valores, setValores] = useState(formularioValoresIniciales)
   const [errores, setErrores] = useState({})
   const [enviando, setEnviando] = useState(false)

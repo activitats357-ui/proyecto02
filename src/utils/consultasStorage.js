@@ -3,6 +3,10 @@
 // información permanece exclusivamente en el navegador del usuario.
 export const CONSULTAS_KEY = 'fisioterapia_consultas'
 
+// Estados posibles de una solicitud/cita, usados para el seguimiento desde el
+// panel de administración.
+export const ESTADOS_CONSULTA = ['pendiente', 'confirmada', 'atendida', 'cancelada']
+
 function generarId() {
   if (typeof crypto !== 'undefined' && crypto.randomUUID) {
     return crypto.randomUUID()
@@ -28,6 +32,7 @@ export function crearConsulta(datos) {
   const nuevaConsulta = {
     id: generarId(),
     createdAt: new Date().toISOString(),
+    estado: 'pendiente',
     nombre: datos.nombre,
     telefono: datos.telefono,
     email: datos.email,
@@ -36,10 +41,19 @@ export function crearConsulta(datos) {
     fechaPreferida: datos.fechaPreferida,
     horarioPreferido: datos.horarioPreferido,
     mensaje: datos.mensaje || '',
+    notasInternas: '',
   }
   const actualizadas = [nuevaConsulta, ...consultas]
   guardarConsultas(actualizadas)
   return nuevaConsulta
+}
+
+export function actualizarConsulta(id, cambios) {
+  const consultas = obtenerConsultas().map((consulta) =>
+    consulta.id === id ? { ...consulta, ...cambios } : consulta,
+  )
+  guardarConsultas(consultas)
+  return consultas
 }
 
 export function eliminarConsulta(id) {

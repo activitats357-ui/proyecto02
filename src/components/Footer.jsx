@@ -1,9 +1,10 @@
 import { Link } from 'react-router-dom'
 import { Activity, Mail, MapPin, Phone } from 'lucide-react'
 import { centro } from '../data'
-import { servicios } from '../data'
+import { useContent } from '../hooks/useContent'
 
 export default function Footer() {
+  const { servicios } = useContent()
   const anio = new Date().getFullYear()
 
   return (

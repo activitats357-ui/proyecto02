@@ -5,10 +5,12 @@ import SectionTitle from '../components/SectionTitle'
 import ServiceCard from '../components/ServiceCard'
 import BoxCard from '../components/BoxCard'
 import Button from '../components/Button'
-import { servicios, diferenciales, boxes, centro } from '../data'
+import { diferenciales, boxes, centro } from '../data'
 import { obtenerIcono } from '../utils/iconos'
+import { useContent } from '../hooks/useContent'
 
 export default function Inicio() {
+  const { servicios } = useContent()
   const serviciosDestacados = servicios.slice(0, 4)
 
   return (

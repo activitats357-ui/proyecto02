@@ -8,10 +8,19 @@ import Consultas from './pages/Consultas'
 import Privacidad from './pages/Privacidad'
 import AvisoLegal from './pages/AvisoLegal'
 import NoEncontrado from './pages/NoEncontrado'
+import RequireAuth from './components/admin/RequireAuth'
+import AdminLayout from './components/admin/AdminLayout'
+import AdminLogin from './pages/admin/AdminLogin'
+import AdminCitas from './pages/admin/AdminCitas'
+import AdminHorarios from './pages/admin/AdminHorarios'
+import AdminServicios from './pages/admin/AdminServicios'
+import AdminProfesionales from './pages/admin/AdminProfesionales'
+import AdminCuenta from './pages/admin/AdminCuenta'
 
 export default function App() {
   return (
     <Routes>
+      {/* Web pública */}
       <Route element={<Layout />}>
         <Route path="/" element={<Inicio />} />
         <Route path="/servicios" element={<Servicios />} />
@@ -21,6 +30,23 @@ export default function App() {
         <Route path="/privacidad" element={<Privacidad />} />
         <Route path="/aviso-legal" element={<AvisoLegal />} />
         <Route path="*" element={<NoEncontrado />} />
+      </Route>
+
+      {/* Panel de administración */}
+      <Route path="/admin/login" element={<AdminLogin />} />
+      <Route
+        path="/admin"
+        element={
+          <RequireAuth>
+            <AdminLayout />
+          </RequireAuth>
+        }
+      >
+        <Route index element={<AdminCitas />} />
+        <Route path="horarios" element={<AdminHorarios />} />
+        <Route path="servicios" element={<AdminServicios />} />
+        <Route path="profesionales" element={<AdminProfesionales />} />
+        <Route path="cuenta" element={<AdminCuenta />} />
       </Route>
     </Routes>
   )

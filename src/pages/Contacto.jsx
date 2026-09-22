@@ -3,9 +3,11 @@ import Seo from '../components/Seo'
 import SectionTitle from '../components/SectionTitle'
 import ContactForm from '../components/ContactForm'
 import MapaSimulado from '../components/MapaSimulado'
-import { centro, horarios } from '../data'
+import { centro } from '../data'
+import { useContent } from '../hooks/useContent'
 
 export default function Contacto() {
+  const { horarios } = useContent()
   return (
     <>
       <Seo

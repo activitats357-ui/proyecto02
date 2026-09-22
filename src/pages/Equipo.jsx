@@ -2,9 +2,12 @@ import { Info } from 'lucide-react'
 import Seo from '../components/Seo'
 import SectionTitle from '../components/SectionTitle'
 import TeamCard from '../components/TeamCard'
-import { profesionales, centro } from '../data'
+import { centro } from '../data'
+import { useContent } from '../hooks/useContent'
 
 export default function Equipo() {
+  const { profesionales } = useContent()
+  const visibles = profesionales.filter((profesional) => !profesional.deshabilitado)
   return (
     <>
       <Seo
@@ -21,7 +24,7 @@ export default function Equipo() {
           />
 
           <div className="mt-12 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-            {profesionales.map((profesional) => (
+            {visibles.map((profesional) => (
               <TeamCard key={profesional.id} profesional={profesional} />
             ))}
           </div>

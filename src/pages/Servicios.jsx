@@ -2,9 +2,11 @@ import { Info } from 'lucide-react'
 import Seo from '../components/Seo'
 import SectionTitle from '../components/SectionTitle'
 import ServiceCard from '../components/ServiceCard'
-import { servicios, centro } from '../data'
+import { centro } from '../data'
+import { useContent } from '../hooks/useContent'
 
 export default function Servicios() {
+  const { servicios } = useContent()
   return (
     <>
       <Seo
