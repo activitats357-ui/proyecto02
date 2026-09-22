@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { Save, RotateCcw, Upload } from 'lucide-react'
+import { Save, RotateCcw, Upload, Info } from 'lucide-react'
 import { obtenerEspacios, guardarEspacios } from '../../utils/contentStore'
 
 const claseInput =
@@ -61,9 +61,22 @@ export default function AdminEspacios() {
       <div className="mb-5">
         <h2 className="text-xl font-bold text-slate-900">Espacios</h2>
         <p className="text-sm text-slate-500">
-          Edita el título, la descripción y la foto de los espacios que se muestran en la página de
-          inicio. Medida recomendada de la foto: proporción 4:3 (p. ej. 1000 × 750 px), &lt; 500 KB.
+          Edita el título, la descripción y la foto de los espacios que se muestran en la página de inicio.
         </p>
+      </div>
+
+      {/* Recomendaciones de la imagen */}
+      <div className="mb-5 flex items-start gap-3 rounded-2xl border border-slate-200 bg-slate-50 p-4 text-sm text-slate-600">
+        <Info className="mt-0.5 h-5 w-5 flex-shrink-0 text-secondary-600" aria-hidden="true" />
+        <div>
+          <p className="font-semibold text-slate-700">Medidas recomendadas de la foto</p>
+          <ul className="mt-1 list-disc space-y-0.5 pl-5">
+            <li>Proporción <strong>4:3</strong> (horizontal).</li>
+            <li>Tamaño ideal: <strong>1000 × 750 px</strong> (mínimo 800 × 600 px).</li>
+            <li>Formato <strong>JPG</strong> o <strong>WebP</strong>, peso inferior a <strong>500 KB</strong>.</li>
+            <li>La imagen se recorta para llenar el marco; deja el motivo principal centrado.</li>
+          </ul>
+        </div>
       </div>
 
       {aviso && (
