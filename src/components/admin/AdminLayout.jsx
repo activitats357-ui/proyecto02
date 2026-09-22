@@ -85,12 +85,6 @@ export default function AdminLayout() {
         <main>
           <Outlet />
         </main>
-
-        <p className="mt-8 rounded-xl border border-amber-200 bg-amber-50 px-4 py-3 text-xs text-amber-800">
-          ⚠️ Versión provisional: el acceso y todos los datos se guardan solo en este navegador. La
-          recuperación de contraseña por correo y el acceso desde otros dispositivos estarán
-          disponibles al conectar el backend.
-        </p>
       </div>
     </div>
   )
