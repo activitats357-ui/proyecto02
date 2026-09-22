@@ -15,6 +15,7 @@ import AdminCitas from './pages/admin/AdminCitas'
 import AdminHorarios from './pages/admin/AdminHorarios'
 import AdminServicios from './pages/admin/AdminServicios'
 import AdminProfesionales from './pages/admin/AdminProfesionales'
+import AdminEspacios from './pages/admin/AdminEspacios'
 import AdminPortada from './pages/admin/AdminPortada'
 import AdminPrivacidad from './pages/admin/AdminPrivacidad'
 import AdminUsuarios from './pages/admin/AdminUsuarios'
@@ -48,6 +49,7 @@ export default function App() {
         <Route path="horarios" element={<AdminHorarios />} />
         <Route path="servicios" element={<AdminServicios />} />
         <Route path="profesionales" element={<AdminProfesionales />} />
+        <Route path="espacios" element={<AdminEspacios />} />
         <Route path="portada" element={<AdminPortada />} />
         <Route path="privacidad" element={<AdminPrivacidad />} />
         <Route path="cuentas" element={<AdminUsuarios />} />

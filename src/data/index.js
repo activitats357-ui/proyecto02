@@ -25,23 +25,7 @@ export const diferenciales = [
   },
 ]
 
-export const boxes = [
-  {
-    numero: '01',
-    nombre: 'Box 01',
-    descripcion: 'Espacio privado preparado para valoraciones y sesiones de tratamiento individualizado.',
-  },
-  {
-    numero: '02',
-    nombre: 'Box 02',
-    descripcion: 'Espacio privado destinado a terapia manual y trabajo de recuperación funcional.',
-  },
-  {
-    numero: '03',
-    nombre: 'Box 03',
-    descripcion: 'Espacio privado orientado al ejercicio terapéutico y a la readaptación progresiva.',
-  },
-]
+export { espacios } from './espacios'
 
 export const tiposSolicitud = [
   'Solicitar turno',

@@ -192,7 +192,7 @@ export default function AdminUsuarios() {
   const restablecer = () => {
     if (
       window.confirm(
-        '¿Restablecer TODO el contenido (especialidades, profesionales, horarios y portada) a los valores originales? Se perderán tus ediciones. Las citas y las cuentas NO se borran.',
+        '¿Restablecer TODO el contenido (especialidades, profesionales, espacios, horarios, portada y política de privacidad) a los valores originales? Se perderán tus ediciones. Las citas y las cuentas NO se borran.',
       )
     ) {
       restablecerContenido()
@@ -302,8 +302,9 @@ export default function AdminUsuarios() {
           Zona de riesgo
         </h3>
         <p className="mt-1.5 text-sm text-slate-600">
-          Restablece el contenido editable (especialidades, profesionales, horarios y portada) a los
-          valores originales del sitio. Las citas y las cuentas no se ven afectadas.
+          Restablece el contenido editable (especialidades, profesionales, espacios, horarios, portada
+          y política de privacidad) a los valores originales del sitio. Las citas y las cuentas no se
+          ven afectadas.
         </p>
         <button
           type="button"

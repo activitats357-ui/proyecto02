@@ -10,6 +10,7 @@ import { servicios as serviciosDefault } from '../data/servicios'
 import { profesionales as profesionalesDefault } from '../data/profesionales'
 import { horarios as horariosDefault } from '../data/centro'
 import { privacidadSecciones as privacidadDefault } from '../data/privacidad'
+import { espacios as espaciosDefault } from '../data/espacios'
 
 export const CONTENIDO_KEY = 'fisioterapia_contenido'
 export const EVENTO_CONTENIDO = 'contenido-actualizado'
@@ -32,6 +33,7 @@ function contenidoPorDefecto() {
     profesionales: clonar(profesionalesDefault),
     horarios: clonar(horariosDefault),
     privacidad: clonar(privacidadDefault),
+    espacios: clonar(espaciosDefault),
     ajustes: ajustesPorDefecto(),
   }
 }
@@ -50,6 +52,7 @@ function leerContenido() {
       profesionales: Array.isArray(guardado.profesionales) ? guardado.profesionales : base.profesionales,
       horarios: Array.isArray(guardado.horarios) ? guardado.horarios : base.horarios,
       privacidad: Array.isArray(guardado.privacidad) ? guardado.privacidad : base.privacidad,
+      espacios: Array.isArray(guardado.espacios) ? guardado.espacios : base.espacios,
       ajustes: { ...base.ajustes, ...(guardado.ajustes || {}) },
     }
   } catch (error) {
@@ -114,6 +117,17 @@ export function guardarPrivacidad(privacidad) {
   contenido.privacidad = privacidad
   guardarContenido(contenido)
   return privacidad
+}
+
+export function obtenerEspacios() {
+  return leerContenido().espacios
+}
+
+export function guardarEspacios(espacios) {
+  const contenido = leerContenido()
+  contenido.espacios = espacios
+  guardarContenido(contenido)
+  return espacios
 }
 
 export function obtenerAjustes() {

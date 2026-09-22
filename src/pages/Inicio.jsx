@@ -5,12 +5,12 @@ import SectionTitle from '../components/SectionTitle'
 import ServiceCard from '../components/ServiceCard'
 import BoxCard from '../components/BoxCard'
 import Button from '../components/Button'
-import { diferenciales, boxes, centro } from '../data'
+import { diferenciales, centro } from '../data'
 import { obtenerIcono } from '../utils/iconos'
 import { useContent } from '../hooks/useContent'
 
 export default function Inicio() {
-  const { servicios } = useContent()
+  const { servicios, espacios } = useContent()
   const serviciosDestacados = servicios.slice(0, 4)
 
   return (
@@ -61,8 +61,8 @@ export default function Inicio() {
           />
 
           <div className="mt-12 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-            {boxes.map((box, indice) => (
-              <BoxCard key={box.numero} box={box} indice={indice} />
+            {espacios.map((box, indice) => (
+              <BoxCard key={box.id || box.numero} box={box} indice={indice} />
             ))}
           </div>
         </div>
