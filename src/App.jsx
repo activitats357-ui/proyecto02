@@ -8,6 +8,7 @@ import Consultas from './pages/Consultas'
 import Privacidad from './pages/Privacidad'
 import AvisoLegal from './pages/AvisoLegal'
 import NoEncontrado from './pages/NoEncontrado'
+import Documentacion from './pages/Documentacion'
 import RequireAuth from './components/admin/RequireAuth'
 import AdminLayout from './components/admin/AdminLayout'
 import AdminLogin from './pages/admin/AdminLogin'
@@ -34,6 +35,9 @@ export default function App() {
         <Route path="/aviso-legal" element={<AvisoLegal />} />
         <Route path="*" element={<NoEncontrado />} />
       </Route>
+
+      {/* Documentación interna (solo por URL) */}
+      <Route path="/documentacion" element={<Documentacion />} />
 
       {/* Panel de administración */}
       <Route path="/admin/login" element={<AdminLogin />} />
